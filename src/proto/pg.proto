@@ -1,0 +1,218 @@
+option go_package = "postgres_tpch_go_lib/proto";
+
+message MultiQuery {
+    repeated Query queries = 1;
+}
+
+message MultiQueryResp {
+    repeated QueryResp results = 1;
+}
+
+message Query {
+    required int32 query_id = 1;
+    repeated QueryInfo queries = 2;
+}
+
+message QueryInfo {
+    repeated string from = 1;
+    repeated string order_by = 2;
+    optional int32 limit = 3;
+    repeated string column = 4;
+    optional string where = 5;
+}
+
+message QueryResp {
+    repeated QueryResult results = 1;
+}
+
+//This array is a matrix - if a query returns 10 columns and 5 rows, it will have len of 50.
+//[0:10] would be the first row, [11:20] the second row, etc.
+message QueryResult {
+    repeated string column = 1;
+}
+
+message BulkInsert {
+    repeated InsertRegion regions = 1;
+    repeated InsertNation nations = 2;
+    repeated InsertPart parts = 3;
+    repeated InsertSupplier suppliers = 4;
+    repeated InsertPartSupp partSupps = 5;
+    repeated InsertCustomer customers = 6;
+    repeated InsertOrder orders = 7;
+    repeated InsertLineItem lineItems = 8;
+    repeated Insert arbitrary = 9;
+}
+
+message MultiTpchUpdate {
+    repeated InsertOrder orders = 1;
+    repeated InsertLineItem items = 2;
+    optional string deleteTable = 3;
+    repeated string deleteIds = 4;
+}
+
+message MultiTpchUpdateResp {}
+
+message TpchUpdate {
+    required InsertOrderItems insert = 1;
+    required Delete delete = 2;
+}
+
+message TpchUpdateResp {
+
+}
+
+message InsertOrderItems {
+    required InsertOrder order = 1;
+    repeated InsertLineItem lineItems = 2;
+}
+
+message Insert {
+    repeated string columns = 1;
+    required string table = 2;
+}
+
+message InsertResp {
+
+}
+
+message InsertRegion {
+    required int32 regionKey = 1;   
+    required string name = 2;
+    required string comment = 3;
+}
+
+message InsertNation {
+    required int32 nationKey = 1;
+    required string name = 2;
+    required int32 regionKey = 3;
+    required string comment = 4;
+}
+
+message InsertPart {
+    required int32 partKey = 1;
+    required string name = 2;
+    required string mfgr = 3;
+    required string brand = 4;
+    required string type = 5;
+    required string size = 6;
+    required string container = 7;
+    required string retailPrice = 8;
+    required string comment = 9;
+}
+
+message InsertSupplier {
+    required int32 suppKey = 1;
+    required string name = 2;
+    required string address = 3;
+    required int32 nationKey = 4;
+    required string phone = 5;
+    required string acctBal = 6;
+    required string comment = 7;
+}
+
+message InsertPartSupp {
+    required int32 partKey = 1;
+    required int32 suppKey = 2;
+    required int32 availQty = 3;
+    required double supplyCost = 4;
+    required string comment = 5;   
+}
+
+message InsertCustomer {
+    required int32 custKey = 1;
+    required string name = 2;
+    required string address = 3;
+    required int32 nationKey = 4;
+    required string phone = 5;
+    required string acctBal = 6;
+    required string mktSegment = 7;
+    required string comment = 8;   
+}
+
+message InsertOrder {
+    required int32 orderKey = 1;
+    required int32 custKey = 2;
+    required string orderStatus = 3;
+    required string totalPrice = 4;
+    required Date orderDate = 5;
+    required string orderPriority = 6;
+    required string clerk = 7;
+    required string shipPriority = 8;
+    required string comment = 9; 
+}
+
+message InsertLineItem {
+    required int32 orderKey = 1;
+    required int32 partKey = 2;
+    required int32 suppKey = 3;
+    required int32 lineNumber = 4;
+    required int32 quantity = 5;
+    required double extendedPrice = 6;
+    required double discount = 7;   
+    required double tax = 8;
+    required string returnFlag = 9;
+    required string lineStatus = 10;
+    required Date shipDate = 11;
+    required Date commitDate = 12;
+    required Date receiptDate = 13;
+    required string shipInstruct = 14;
+    required string shipMode = 15;
+    required string comment = 16;
+}
+
+message Delete {
+    required string table = 1;  //From
+    required string condition = 2;  //Where
+}
+
+message DeleteResp {
+
+}
+
+message CreateTable {
+    repeated int32 table_id = 1;
+    repeated ForeignKey foreign_keys = 2;   //Only used with table_id. One entry per table_id, each entry can have multiple keys.
+    repeated string statement = 3;
+}
+
+message ForeignKey {
+    repeated string foreign_key = 1;
+}
+
+message CreateTableResp {
+
+}
+
+message DropTable {
+    repeated string table = 1;
+}
+
+message DropTableResp {
+
+}
+
+message CreateView {
+    repeated string statement = 1;
+}
+
+message CreateViewResp {
+    optional string errorMsg = 1;
+}
+
+message DropView {
+    repeated string view = 1;
+}
+
+message DropViewResp {
+    
+}
+
+message CloseConnection {
+    
+}
+
+message Date {
+    required int32 year = 1;
+    required int32 month = 2;
+    required int32 day = 3;
+}
